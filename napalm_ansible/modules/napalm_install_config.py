@@ -33,7 +33,7 @@ def return_values(obj):
 
 DOCUMENTATION = '''
 ---
-module: napalm_install_config
+module: napalm_install_/onfig
 author: "Elisa Jasinska (@fooelisa)"
 version_added: "2.1"
 short_description: "Installs the configuration taken from a file on a device supported by NAPALM"
@@ -198,7 +198,8 @@ def main():
             diff_file=dict(type='str', required=False, default=None),
             get_diffs=dict(type='bool', required=False, default=True),
             archive_file=dict(type='str', required=False, default=None),
-            candidate_file=dict(type='str', required=False, default=None)
+            candidate_file=dict(type='str', required=False, default=None),
+            confirm_time=dict(type='str', required=False, default=None)
         ),
         supports_check_mode=True
     )
@@ -237,6 +238,7 @@ def main():
     get_diffs = module.params['get_diffs']
     archive_file = module.params['archive_file']
     candidate_file = module.params['candidate_file']
+    confirm_time = module.params['confirm_time']
     if config_file:
         config_file = os.path.expanduser(os.path.expandvars(config_file))
     if diff_file:
@@ -317,7 +319,7 @@ def main():
             device.discard_config()
         else:
             if changed:
-                device.commit_config()
+                device.commit_config(confirm=confirm_time)
     except Exception as e:
         module.fail_json(msg="cannot install config: " + str(e))
 
